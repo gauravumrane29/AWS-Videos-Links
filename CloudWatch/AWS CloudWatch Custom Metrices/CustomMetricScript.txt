@@ -1,0 +1,78 @@
+Custom matrics Configuration in cloud watch
+
+Matrics Name: Memory and disk utilization
+free -h commands for ec2)
+df h (Command for EC2)
+
+google>›cloudwatch script ›› mon-put-instance-data.pl
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/mon-scripts.html#using_put_script
+
+»›To install the required packages on Amazon:
+sudo yum install -y perl-Switch perl-DateTime perl-Sys-Syslog per1-LWP-Protocol-https perl-Digest-SHA. x86_64
+
+»›create a folder a to download the script
+mkdir/cloudwatch
+cd /cloudwatch
+
+»›Download the script
+wet https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
+
+run ll to checke the downloaded zipped script
+
+>› Unzip the script
+unzip CloudWatchMonitoringScripts-1.2.2.zip
+
+»remove zipped file
+rm CloudWatchMonitoringScripts-1.2.2.zip
+
+>›>get inside aws-scripts-mon
+cd aws-scripts-mon
+type 11 (to see the file0
+
+››Rename awscreds. template into awscreds.conf
+cp awscreds.template awscreds.conf
+
+» get into awscreds.conf and store access and secret key
+vim awscreds.conf
+access key:
+Secret Key:
+
+: wq! (Save and Exit)
+
+»›send data to cloudwatch for selected memory criteria and run the cloudwatch custom matrics after executing the below commands
+./mon-put-instance-data.pl --mem-util
+./mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --mem-used --mem-avail
+
+To send the disk utilization data:
+
+›› first check the disk path
+df -h
+lets assume disk path is : /dev/xvda1
+
+>› put disk utilization data in cloud watch and check in cloudwatch custom matrics after executing the below commands
+./mon-put-instance-data.pl --disk-space-util --disk-path=/dev/xvda1
+./mon-put-instance-data.pl --disk-space-avail --disk-path=/dev/xvda1
+./mon-put-instance-data.pl --disk-space-used--disk-path=/dev/xvda1
+
+>> all above command will send data to cloud watch only one time, if we want to send it continuously we need to run cron tab commnad
+
+crontab - e
+
+enter the below lines
+*/1 * * * * /cloudwatch/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/dev/xvda1 --from-cron
+
+*/1 * * * * /cloudwatch/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-used --disk-space-used --disk-path=/dev/xvdal --from-cron
+
+*/1 * * * * /cloudwatch/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-avail --disk-space-avail --disk-path=/dev/xvda1 --from-cron
+
+type: !wq ‹save and exit>
+
+»›Set a alarm on used diskspace >> if diskutilization is more than 5 GB send a mail
+
+1): set a alarm on custom matrics of ec2 == used disk
+2): create a file with 5GB size to increase disk used space
+fallocate -1 5G test.img
+
+check disk used: df -h
+
+3): Check the alarm action: mail and ec2 action
