@@ -1,0 +1,16 @@
+1st Video
+AWS CloudWatch
+https://youtu.be/JxxP88ZXmQA
+
+2nd Video
+AWS CloudWatch Custom Metrices
+200~https://youtu.be/r2NpOQp7pwE
+
+3rd videos
+AWS CloudWatch Configure Event
+https://youtu.be/0FoOG2F9keY
+
+4th Video
+AWS CloudWatch Billing Alarm
+https://youtu.be/F2YkXor6eEo
+
